@@ -34,7 +34,7 @@ public class DiContainer
 
         if (actualType.IsAbstract || actualType.IsInterface)
         {
-            throw new Exception("Cannot instantiate abstract classes or interfaces");
+            throw new AbstractOrInterfaceClassException("Cannot instantiate abstract classes or interfaces");
         }
 
         var constructorInfo = actualType

@@ -1,3 +1,4 @@
+using DI_Framework.Exceptions;
 using DI_Framework.Tests.Sut.Services;
 using Xunit;
 
@@ -12,7 +13,6 @@ public class ContainerTest
             
         var container = services.GenerateContainer(); // Generate container without register our service
         
-        // Todo must manage exceptions
-        Assert.Throws<Exception>(() => container.GetService<GuidService>()); // Must throw an Exception
+        Assert.Throws<NotRegisteredException>(() => container.GetService<GuidService>()); // Must throw an Exception
     }
 }

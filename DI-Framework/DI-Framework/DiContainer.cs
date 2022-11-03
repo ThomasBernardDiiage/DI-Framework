@@ -1,4 +1,5 @@
 ﻿using DI_Framework;
+using DI_Framework.Exceptions;
 
 public class DiContainer
 {
@@ -21,7 +22,7 @@ public class DiContainer
 
         if (descriptor is null)
         {
-            throw new Exception($"Service of type {serviceType.Name} isn't registered");
+            throw new NotRegisteredException($"Service of type {serviceType.Name} isn't registered");
         }
 
         if (descriptor.Implementation is not null)

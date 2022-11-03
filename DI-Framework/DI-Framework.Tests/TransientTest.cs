@@ -25,7 +25,7 @@ public class TransientTest
     {
         var services = new DiServiceCollection();
         
-        services.RegisterTransient<IGuidService, GuidService>(); // Register a transient service
+        services.RegisterTransient<GuidService>(); // Register a transient service without interface
         var container = services.GenerateContainer();
         
         var sut1 = container.GetService<IGuidService>();

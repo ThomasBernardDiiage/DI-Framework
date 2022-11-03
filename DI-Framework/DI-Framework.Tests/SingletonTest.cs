@@ -1,9 +1,10 @@
-﻿using DI_Framework.Tests.Sut.Interfaces;
+using DI_Framework.Tests.Sut.Interfaces;
 using DI_Framework.Tests.Sut.Services;
+using Xunit;
 
 namespace DI_Framework.Tests;
 
-public class UnitTest
+public class SingletonTest
 {
     [Fact]
     public void TestSingletonInstanceInterfaceAndImplementation()
@@ -12,7 +13,7 @@ public class UnitTest
         
         services.RegisterSingleton<IGuidService, GuidService>(); // Register a singleton
         var container = services.GenerateContainer();
-
+        
         var sut1 = container.GetService<IGuidService>();
         var sut2 = container.GetService<IGuidService>();
         
@@ -20,7 +21,7 @@ public class UnitTest
     }
     
     [Fact]
-    public void TestSingletonInstanceInterface()
+    public void TestSingletonInstanceImplementation()
     {
         var services = new DiServiceCollection();
         
@@ -32,21 +33,4 @@ public class UnitTest
         
         Assert.Equal(sut1, sut2); // Our Service must be the same instance
     }
-    
-    
-    [Fact]
-    public void TestTransient()
-    {
-        
-    }
-    
-    
-    [Fact]
-    public void TestScope()
-    {
-        
-    }
-
-    
-    
 }

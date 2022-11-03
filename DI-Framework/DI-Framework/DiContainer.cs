@@ -1,17 +1,25 @@
 ﻿using DI_Framework;
 
+/// <summary>
+/// Describes a service to retrieve a collection of service descriptors
+/// </summary>
 public class DiContainer
 {
-    private List<ServiceDescriptor> _serviceDescriptors = new List<ServiceDescriptor>();
+    private List<ServiceDescriptor> _serviceDescriptors = new();
 
     public DiContainer(List<ServiceDescriptor> serviceDescriptors)
     {
         _serviceDescriptors = serviceDescriptors;
     }
 
+    /// <summary>
+    /// Get service of type <paramref name="serviceType"/>from the <see cref="DiContainer"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public object GetService(Type serviceType)
     {
-        if(serviceType is null)
+        if (serviceType is null)
         {
             throw new ArgumentNullException();
         }
@@ -29,18 +37,27 @@ public class DiContainer
             return descriptor.Implementation;
         }
 
-        var actualType = descriptor.ImplementationType ?? descriptor.ServiceType;
+        Type actualType = descriptor.ImplementationType ?? descriptor.ServiceType;
 
-        if (actualType.IsAbstract || actualType.IsInterface)
+        if (actualType is null || actualType.IsAbstract || actualType.IsInterface)
         {
-            throw new Exception("Cannot instantiate abstract classes or interfaces");
+            throw new Exception("Cannot instantiate abstract classes or interfaces or nulles classe");
+        }
+
+        var moreThanOneConstructor = actualType
+            .GetConstructors()
+            .Count() > 1 ? true : false;
+
+        if (moreThanOneConstructor)
+        {
+            throw new Exception("You must have only one constructor");
         }
 
         var constructorInfo = actualType
             .GetConstructors()
-            .MaxBy(x => x.GetParameters().Count());
+            .First();
 
-        var parameters = constructorInfo!.GetParameters()
+        var parameters = constructorInfo.GetParameters()
             .Select(x => GetService(x.ParameterType))
             .ToArray();
 
@@ -54,7 +71,13 @@ public class DiContainer
         return implementation!;
     }
 
+    /// <summary>
+    /// Get service of type <typeparamref name="T"/> from the <see cref="DiContainer"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public T GetService<T>()
+        where T : notnull
     {
         return (T)GetService(typeof(T));
     }

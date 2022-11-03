@@ -1,5 +1,5 @@
 ﻿using DI_Framework;
-
+using DI_Framework.Exceptions;
 /// <summary>
 /// Describes a service to retrieve a collection of service descriptors
 /// </summary>
@@ -29,7 +29,7 @@ public class DiContainer
 
         if (descriptor is null)
         {
-            throw new Exception($"Service of type {serviceType.Name} isn't registered");
+            throw new NotRegisteredException($"Service of type {serviceType.Name} isn't registered");
         }
 
         if (descriptor.Implementation is not null)
@@ -50,7 +50,7 @@ public class DiContainer
 
         if (moreThanOneConstructor)
         {
-            throw new Exception("You must have only one constructor");
+            throw new AbstractOrInterfaceClassException("Cannot instantiate abstract classes or interfaces");
         }
 
         var constructorInfo = actualType

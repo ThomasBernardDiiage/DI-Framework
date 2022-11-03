@@ -1,19 +1,15 @@
 ﻿namespace DI_Framework
 {
+    /// <summary>
+    /// Describes a service with its service type, implementation, and lifetime.
+    /// </summary>
     public class ServiceDescriptor
     {
-        public Type? ServiceType { get; }
+        public Type ServiceType { get; }
         public Type? ImplementationType { get; }
 
         public object? Implementation { get; internal set; }
         public ServiceLifetime LifeTime { get; }
-
-        public ServiceDescriptor(object implementation, ServiceLifetime lifeTime)
-        {
-            ServiceType = implementation.GetType();
-            Implementation = implementation!;
-            LifeTime = lifeTime;
-        }
 
         public ServiceDescriptor(Type serviceType, ServiceLifetime lifeTime)
         {

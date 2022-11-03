@@ -5,7 +5,8 @@ using DI_Framework.Exceptions;
 /// </summary>
 public class DiContainer
 {
-    private List<ServiceDescriptor> _serviceDescriptors = new();
+    private readonly List<ServiceDescriptor> _serviceDescriptors;
+    private readonly object _lock = new();
 
     public DiContainer(List<ServiceDescriptor> serviceDescriptors)
     {
@@ -17,41 +18,32 @@ public class DiContainer
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public object GetService(Type serviceType)
+    private object GetService(Type serviceType)
     {
         if (serviceType is null)
-        {
             throw new ArgumentNullException();
-        }
 
         var descriptor = _serviceDescriptors
             .SingleOrDefault(x => x.ServiceType == serviceType);
 
         if (descriptor is null)
-        {
             throw new NotRegisteredException($"Service of type {serviceType.Name} isn't registered");
-        }
+
 
         if (descriptor.Implementation is not null)
-        {
             return descriptor.Implementation;
-        }
-
-        Type actualType = descriptor.ImplementationType ?? descriptor.ServiceType;
+        
+        var actualType = descriptor.ImplementationType ?? descriptor.ServiceType;
 
         if (actualType is null || actualType.IsAbstract || actualType.IsInterface)
-        {
-            throw new Exception("Cannot instantiate abstract classes or interfaces or nulles classe");
-        }
+            throw new Exception("Cannot instantiate abstract classes or interfaces or nulls class");
 
         var moreThanOneConstructor = actualType
             .GetConstructors()
-            .Count() > 1 ? true : false;
+            .Length > 1 ? true : false;
 
         if (moreThanOneConstructor)
-        {
-            throw new AbstractOrInterfaceClassException("Cannot instantiate abstract classes or interfaces");
-        }
+            throw new Exception("You must have only one constructor");
 
         var constructorInfo = actualType
             .GetConstructors()
@@ -65,7 +57,11 @@ public class DiContainer
 
         if (descriptor.LifeTime == ServiceLifetime.Singleton)
         {
-            descriptor.Implementation = implementation!;
+            lock (_lock)
+            {
+                if (descriptor?.Implementation is null)
+                    descriptor.Implementation = implementation!;
+            }
         }
 
         return implementation!;

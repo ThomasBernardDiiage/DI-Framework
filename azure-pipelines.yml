@@ -7,7 +7,7 @@ variables:
 steps:
 
 - script: | 
-      echo $(System.DefaultWorkingDirectory) 
+      echo dir
       dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
   workingDirectory: $(System.DefaultWorkingDirectory)

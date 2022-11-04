@@ -10,7 +10,7 @@ steps:
       dir
       dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
-  workingDirectory: $(System.DefaultWorkingDirectory)
+  workingDirectory: $(System.DefaultWorkingDirectory)/DI-Framework
 
 
 - task: NuGetCommand@2

@@ -26,8 +26,8 @@ steps:
   displayName: "Publishing new nuget package version"
   inputs:
     command: 'push'
-    packagesToPush: '/home/vsts/work/1/a/DI-Framework.1.0.0-CI-20221104-125308.nupkg'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: '$(System.TeamProject)/DI-Framework/'
+    publishVstsFeed: '$(System.TeamProject)/DI-nuget/'
     allowPackageConflicts: false
     verbosityPush: "Normal"

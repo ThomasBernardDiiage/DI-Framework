@@ -11,7 +11,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: pack
-    packagesToPack: '**/DI-Framework.csproj'
+    packagesToPack: '**/*.csproj'
     packDestination: '$(Build.ArtifactStagingDirectory)'
     versioningScheme: byPrereleaseNumber
     arguments: '--configuration $(buildConfiguration)'

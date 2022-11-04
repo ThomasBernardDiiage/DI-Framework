@@ -8,6 +8,10 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
   workingDirectory: $(System.DefaultWorkingDirectory)
+
+
+- script: echo $(System.DefaultWorkingDirectory)
+
 - task: NuGetCommand@2
   inputs:
     command: pack

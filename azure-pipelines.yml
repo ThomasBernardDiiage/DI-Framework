@@ -28,6 +28,6 @@ steps:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: '$(System.TeamProject)/DI-Framework'
+    publishVstsFeed: '$(System.TeamProject)/DI-Framework/DI-Framework'
     allowPackageConflicts: false
     verbosityPush: "Normal"

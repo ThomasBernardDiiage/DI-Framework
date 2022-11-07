@@ -55,7 +55,7 @@ public class DiContainer
 
         var implementation = Activator.CreateInstance(actualType, parameters);
 
-        if (descriptor.LifeTime == ServiceLifetime.Singleton)
+        if (descriptor.LifeTime == ServiceLifetime.Singleton || descriptor.LifeTime == ServiceLifetime.Scope)
         {
             lock (_lock)
             {

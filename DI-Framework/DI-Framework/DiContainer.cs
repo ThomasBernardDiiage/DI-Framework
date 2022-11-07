@@ -43,7 +43,7 @@ public class DiContainer
             .Length > 1 ? true : false;
 
         if (moreThanOneConstructor)
-            throw new Exception("You must have only one constructor");
+            throw new TooManyConstructorException("You must have only one constructor");
 
         var constructorInfo = actualType
             .GetConstructors()

@@ -25,11 +25,11 @@ steps:
     arguments: '--configuration $(buildConfiguration)'
 
 - task: NuGetCommand@2
-  displayName: Publish
+  displayName: "Publish"
   inputs:
-    command: push
-    packagesToPush: $(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg
-    nuGetFeedType: internal
-    publishVstsFeed: $(System.TeamProject)/DI-Framework
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: '$(System.TeamProject)/DI-nuget/'
     allowPackageConflicts: false
-    publishPackageMetadata: true
+    verbosityPush: "Normal"

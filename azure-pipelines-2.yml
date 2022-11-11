@@ -1,5 +1,6 @@
 trigger:
-- main
+- develop
+
 pool:
   vmImage: ubuntu-latest
 variables:
@@ -22,13 +23,3 @@ steps:
     packDestination: '$(Build.ArtifactStagingDirectory)'
     versioningScheme: byPrereleaseNumber
     arguments: '--configuration $(buildConfiguration)'
-
-- task: NuGetCommand@2
-  displayName: "Publish"
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: '$(System.TeamProject)/DI-nuget/'
-    allowPackageConflicts: false
-    verbosityPush: "Normal"

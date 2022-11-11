@@ -28,8 +28,8 @@ public class TransientTest
         services.RegisterTransient<GuidService>(); // Register a transient service without interface
         var container = services.GenerateContainer();
         
-        var sut1 = container.GetService<IGuidService>();
-        var sut2 = container.GetService<IGuidService>();
+        var sut1 = container.GetService<GuidService>();
+        var sut2 = container.GetService<GuidService>();
         
         Assert.NotEqual(sut1, sut2); // Our Service must be a different instance
     }

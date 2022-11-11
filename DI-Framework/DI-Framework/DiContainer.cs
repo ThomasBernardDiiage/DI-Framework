@@ -1,60 +1,79 @@
 ﻿using DI_Framework;
-
+using DI_Framework.Exceptions;
+/// <summary>
+/// Describes a service to retrieve a collection of service descriptors
+/// </summary>
 public class DiContainer
 {
-    private List<ServiceDescriptor> _serviceDescriptors = new List<ServiceDescriptor>();
+    private readonly List<ServiceDescriptor> _serviceDescriptors;
+    private readonly object _lock = new();
 
     public DiContainer(List<ServiceDescriptor> serviceDescriptors)
     {
         _serviceDescriptors = serviceDescriptors;
     }
 
-    public object GetService(Type serviceType)
+    /// <summary>
+    /// Get service of type <paramref name="serviceType"/>from the <see cref="DiContainer"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    private object GetService(Type serviceType)
     {
-        if(serviceType is null)
-        {
+        if (serviceType is null)
             throw new ArgumentNullException();
-        }
 
         var descriptor = _serviceDescriptors
             .SingleOrDefault(x => x.ServiceType == serviceType);
 
         if (descriptor is null)
-        {
-            throw new Exception($"Service of type {serviceType.Name} isn't registered");
-        }
+            throw new NotRegisteredException($"Service of type {serviceType.Name} isn't registered");
+
 
         if (descriptor.Implementation is not null)
-        {
             return descriptor.Implementation;
-        }
-
+        
         var actualType = descriptor.ImplementationType ?? descriptor.ServiceType;
 
-        if (actualType.IsAbstract || actualType.IsInterface)
-        {
-            throw new Exception("Cannot instantiate abstract classes or interfaces");
-        }
+        if (actualType is null || actualType.IsAbstract || actualType.IsInterface)
+            throw new Exception("Cannot instantiate abstract classes or interfaces or nulls class");
+
+        var moreThanOneConstructor = actualType
+            .GetConstructors()
+            .Length > 1 ? true : false;
+
+        if (moreThanOneConstructor)
+            throw new TooManyConstructorException("You must have only one constructor");
 
         var constructorInfo = actualType
             .GetConstructors()
-            .MaxBy(x => x.GetParameters().Count());
+            .First();
 
-        var parameters = constructorInfo!.GetParameters()
+        var parameters = constructorInfo.GetParameters()
             .Select(x => GetService(x.ParameterType))
             .ToArray();
 
         var implementation = Activator.CreateInstance(actualType, parameters);
 
-        if (descriptor.LifeTime == ServiceLifetime.Singleton)
+        if (descriptor.LifeTime == ServiceLifetime.Singleton || descriptor.LifeTime == ServiceLifetime.Scope)
         {
-            descriptor.Implementation = implementation!;
+            lock (_lock)
+            {
+                if (descriptor?.Implementation is null)
+                    descriptor.Implementation = implementation!;
+            }
         }
 
         return implementation!;
     }
 
+    /// <summary>
+    /// Get service of type <typeparamref name="T"/> from the <see cref="DiContainer"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public T GetService<T>()
+        where T : notnull
     {
         return (T)GetService(typeof(T));
     }

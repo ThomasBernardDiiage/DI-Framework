@@ -14,12 +14,3 @@ steps:
 - script: dotnet test
   displayName: 'Tests'
   workingDirectory: $(System.DefaultWorkingDirectory)/DI-Framework
-
-- task: NuGetCommand@2
-  displayName: Pack
-  inputs:
-    command: pack
-    packagesToPack: './DI-Framework/DI-Framework/DI-Framework.csproj'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
-    versioningScheme: byPrereleaseNumber
-    arguments: '--configuration $(buildConfiguration)'

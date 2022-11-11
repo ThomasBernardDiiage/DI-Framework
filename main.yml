@@ -1,0 +1,35 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+variables:
+  buildConfiguration: 'Release'
+steps:
+
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'Build'
+  workingDirectory: $(System.DefaultWorkingDirectory)/DI-Framework
+
+- script: dotnet test
+  displayName: 'Tests'
+  workingDirectory: $(System.DefaultWorkingDirectory)/DI-Framework
+
+- task: NuGetCommand@2
+  displayName: Pack
+  inputs:
+    command: pack
+    packagesToPack: './DI-Framework/DI-Framework/DI-Framework.csproj'
+    packDestination: '$(Build.ArtifactStagingDirectory)'
+    versioningScheme: byPrereleaseNumber
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: NuGetCommand@2
+  displayName: Publish
+  inputs:
+    command: push
+    packagesToPush: $(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg
+    nuGetFeedType: internal
+    publishVstsFeed: $(System.TeamProject)/DI-Framework
+    allowPackageConflicts: false
+    publishPackageMetadata: true

@@ -49,6 +49,8 @@ public class ContainerTest
         
         Assert.NotEqual(instance1, instance2); // Transient so must be different instances
         Assert.Equal(instance1?.SecondClass, instance2?.SecondClass); // Singleton so must be the same instance
+        Assert.NotNull(instance1?.SecondClass?.ThirdClass);
+        Assert.NotNull(instance2?.SecondClass?.ThirdClass);
     }
 }
 

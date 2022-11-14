@@ -22,8 +22,8 @@ public class ScopeTest
 
         var secondService = secondScope.Container.GetService<IGuidService>();
 
-        Assert.NotEqual(firstService, secondService); // Deux scopes retournent une instance différente pour une demande du même service
-        Assert.Equal(firstService, sameFirstService); // L'instance est la même sur toute la portée du scope
+        Assert.NotEqual(firstService, secondService); // Must be different instances
+        Assert.Equal(firstService, sameFirstService); // Must be the same instance
     }
     
     [Fact]
@@ -40,7 +40,7 @@ public class ScopeTest
         var firstService = firstScope.Container.GetService<ClassWithoutInterface>();
         var secondService = secondScope.Container.GetService<ClassWithoutInterface>();       
 
-        Assert.NotEqual(firstService, secondService); // Deux scopes retournent une instance différente pour une demande du même service
-        Assert.Equal(firstService.GetGuid(), secondService.GetGuid()); // Deux scopes différents récupèrent bien la même instance du singleton
+        Assert.NotEqual(firstService, secondService); // Must be different instances
+        Assert.Equal(firstService.GetGuid(), secondService.GetGuid()); // Must be the same instance
     }
 }

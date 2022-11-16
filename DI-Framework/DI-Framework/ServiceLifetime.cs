@@ -1,20 +1,20 @@
 ﻿namespace DI_Framework
 {
     /// <summary>
-    /// Spécifie la durée de vie d’un service dans un DiServiceCollection.
+    /// LifeTime in DiServiceCollection.
     /// </summary>
     public enum ServiceLifetime
     {
         /// <summary>
-        /// Spécifie qu’une seule instance du service sera créée.
+        /// Just one instance
         /// </summary>
         Singleton,
         /// <summary>
-        /// Spécifie qu’une nouvelle instance du service sera créée chaque fois qu’une demande est effectuée.
+        /// New instance each time
         /// </summary>
         Transient,
         /// <summary>
-        /// Spécifie qu’une nouvelle instance du service sera créée pour chaque étendue.
+        /// New instance for each scope
         /// </summary>
         Scope
     }

@@ -1,20 +1,52 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+## Installation 💿
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Vous pouvez installer la dernière version du package nuget en executant la commande `Install-Package DI-Framework -version 1.0.0-CI-20221111-212919` dans la console de votre gestionnaire de packages.
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+## Getting started 🚀
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+Dans un premier temps vous devez instancier votre container IOC comme ceci :
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+```csharp
+var services = new DiServiceCollection();
+```
+
+Vous pouvez ensuite enregistrez vos différentes instances dans votre container. Il existe 3 types d'instances différentes.
+ - Les Singletons
+ - Les Transients
+ - Les scopes
+
+ À la fin de l'enregistrement de toutes vos instances, il faut générer votre container : 
+ ```csharp
+ var container = services.GenerateContainer();
+ ```
+
+ ### Singleton
+
+ Les Singletons enregistreront qu'une seule instance tout au long de votre application. On peut les enregistrer de deux manières différentes (Avec ou sans interface) :
+ ```csharp
+ var services = new DiServiceCollection();
+ services.RegisterSingleton<IGuidService, GuidService>(); // Register a singleton with an interface
+ // ===== OR ====
+ services.RegisterSingleton<GuidService>(); // Register a singleton without interface
+var container = services.GenerateContainer();
+ ```
+
+ ### Transient
+ Les transient vous fourniront une instance à chaque nouvelle demande ils s'enregistrent de cette façon :
+  ```csharp
+ var services = new DiServiceCollection();
+ services.RegisterTransient<IGuidService, GuidService>(); // Register a transient with an interface
+ // ===== OR ====
+ services.RegisterTransient<GuidService>(); // Register a transient without interface
+var container = services.GenerateContainer();
+ ```
+
+ ### Scope 
+ Les scope fournisse une seule et même instance par scope. Il faut donc créer un scope pour pouvoir récupérer nos instances :
+ ```csharp
+var services = new DiServiceCollection();
+services.RegisterScope<IGuidService, GuidService>();
+
+var firstScope = services.CreateScope();  
+var firstService = firstScope.Container.GetService<IGuidService>();
+```

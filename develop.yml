@@ -15,4 +15,3 @@ steps:
   displayName: 'Tests'
   workingDirectory: $(System.DefaultWorkingDirectory)/DI-Framework
 - task: QodanaScan@2022
-  inputs:

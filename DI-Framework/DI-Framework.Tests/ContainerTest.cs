@@ -30,7 +30,7 @@ public class ContainerTest
         var container = services.GenerateContainer();
 
         var instanceFirstClass = container.GetService<FirstClass>();
-        Assert.NotNull(instanceFirstClass.SecondClass.ThirdClass);
+        Assert.NotNull(instanceFirstClass?.SecondClass?.ThirdClass);
     }
     
     [Fact]
@@ -48,7 +48,7 @@ public class ContainerTest
         var instance2 = container.GetService<FirstClass>(); // Get 2 different instance of FirstClass
         
         Assert.NotEqual(instance1, instance2); // Transient so must be different instances
-        Assert.Equal(instance1.SecondClass, instance2.SecondClass); // Singleton so must be the same instance
+        Assert.Equal(instance1?.SecondClass, instance2?.SecondClass); // Singleton so must be the same instance
         Assert.NotNull(instance1?.SecondClass?.ThirdClass);
         Assert.NotNull(instance2?.SecondClass?.ThirdClass);
     }

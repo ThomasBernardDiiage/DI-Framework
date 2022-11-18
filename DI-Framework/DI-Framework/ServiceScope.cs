@@ -5,7 +5,7 @@
     /// </summary>
     public class ServiceScope : IDisposable
     {
-        private bool _disposed = false;
+        private bool _disposed;
         public DiContainer Container { get; }
         public ServiceScope(DiContainer container)
         {

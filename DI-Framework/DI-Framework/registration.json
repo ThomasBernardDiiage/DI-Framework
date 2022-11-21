@@ -1,0 +1,12 @@
+﻿[
+  {
+    "registrationType": "singleton",
+    "interfaceName": "test",
+    "classeName": "test"
+  },
+  {
+    "registrationType": "transcient",
+    "interfaceName": "test",
+    "classeName": "test"
+  }
+]

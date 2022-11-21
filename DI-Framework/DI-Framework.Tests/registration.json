@@ -1,0 +1,11 @@
+﻿[
+  {
+    "registrationType": "Transient",
+    "interfaceName": "IRandomGuidProvider",
+    "classeName": "RandomGuidProvider"
+  },
+  {
+    "registrationType": "Transient",
+    "classeName": "RandomGuidProvider"
+  }
+]

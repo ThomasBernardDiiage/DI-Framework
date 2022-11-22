@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DI-Framework.Tests.RegistrationAutherAssembly\DI-Framework.Tests.RegistrationAutherAssembly.csproj" />
     <ProjectReference Include="..\DI-Framework\DI-Framework.csproj" />
   </ItemGroup>
 

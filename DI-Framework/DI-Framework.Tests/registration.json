@@ -7,5 +7,9 @@
   {
     "registrationType": "Transient",
     "classeName": "RandomGuidProvider"
+  },
+  {
+    "registrationType": "Transient",
+    "classeName": "EmptyClass"
   }
 ]

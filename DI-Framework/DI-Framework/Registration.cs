@@ -9,7 +9,9 @@ namespace DI_Framework
         [JsonProperty("registrationType")]
         [JsonConverter(typeof(StringEnumConverter))]
         public ServiceLifetime ServiceLifetime { get; set; }
-        public string InterfaceName { get; set; }
-        public string ClasseName { get; set; }
+        public string InterfaceName { get; set; } = string.Empty;
+        public string AssemblyInterface { get; set; } = string.Empty;
+        public string ClasseName { get; set; } = string.Empty;
+        public string AssemblyClasse { get; set; } = string.Empty;
     }
 }

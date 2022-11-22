@@ -1,11 +1,14 @@
 ﻿[
   {
     "registrationType": "Transient",
-    "interfaceName": "IRandomGuidProvider",
-    "classeName": "RandomGuidProvider"
+    "interfaceName": "IClassB",
+    "assemblyInterface": "DI-Framework.Tests.RegistrationAutherAssembly.dll",
+    "classeName": "ClassB",
+    "assemblyClasse": "DI-Framework.Tests.RegistrationAutherAssembly.dll"
   },
   {
     "registrationType": "Transient",
-    "classeName": "RandomGuidProvider"
+    "classeName": "ClassA",
+    "assemblyClasse": "DI-Framework.Tests.RegistrationAutherAssembly.dll"
   }
 ]

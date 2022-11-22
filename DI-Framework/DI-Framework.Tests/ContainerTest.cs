@@ -1,4 +1,5 @@
 using DI_Framework.Exceptions;
+using DI_Framework.Tests.RegistrationAutherAssembly;
 using DI_Framework.Tests.Sut.Interfaces;
 using DI_Framework.Tests.Sut.Services;
 using Xunit;
@@ -10,12 +11,11 @@ public class ContainerTest
     [Fact]
     public void TestRegisterFromAssembly()
     {
-        var registration = File.ReadAllText("registration.json");
         var services = new DiServiceCollection();
-        services.RegisterFromAssembly(registration);
+        services.RegisterFromAssembly("registration.json");
         var container = services.GenerateContainer();
-        var service1 = container.GetService<IRandomGuidProvider>();
-        var service2 = container.GetService<EmptyClass>();
+        var service1 = container.GetService<IClassB>();
+        var service2 = container.GetService<ClassA>();
         Assert.NotNull(service1);
         Assert.NotNull(service2);
     }

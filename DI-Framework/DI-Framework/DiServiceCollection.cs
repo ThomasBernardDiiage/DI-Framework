@@ -117,34 +117,43 @@ namespace DI_Framework
         {
             return new DiContainer(_serviceDescriptors);
         }
-        public void RegisterFromAssembly(string text)
+        public void RegisterFromAssembly(string name)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException(nameof(text));  
+                throw new ArgumentException(nameof(name));
             }
+
+            var text = File.ReadAllText(name);
 
             var registrations = JsonConvert.DeserializeObject<IEnumerable<Registration>>(text, new StringEnumConverter());
 
             foreach (var registration in registrations)
             {
-                var serviceType = Assembly.GetCallingAssembly().GetTypes()
-                                           .FirstOrDefault(e => e.Name == registration.InterfaceName);
+                Type? serviceType = null;
+                if (!string.IsNullOrEmpty(registration.AssemblyInterface))
+                {
+                    serviceType = Assembly.LoadFrom(registration.AssemblyInterface)
+                    .GetTypes().FirstOrDefault(e => e.Name == registration.InterfaceName);
+                }
 
                 if (!string.IsNullOrEmpty(registration.InterfaceName) && serviceType is null)
                 {
                     throw new Exception("Couldn't reach the interface");
                 }
-               
-                var implementationType = Assembly.GetCallingAssembly().GetTypes()
-                                            .FirstOrDefault(e => e.Name == registration.ClasseName);
 
+                Type? implementationType = null;
+                if (!string.IsNullOrEmpty(registration.AssemblyClasse))
+                {
+                    implementationType = Assembly.LoadFrom(registration.AssemblyClasse)
+                    .GetTypes().FirstOrDefault(e => e.Name == registration.ClasseName);
+                }
                 if (!string.IsNullOrEmpty(registration.ClasseName) && implementationType is null)
                 {
                     throw new Exception("Couldn't reach the class");
                 }
 
-                if(implementationType is null && serviceType is not null)
+                if (implementationType is null && serviceType is not null)
                 {
                     throw new Exception("You can't register an interface without its implementation");
                 }
@@ -178,7 +187,7 @@ namespace DI_Framework
                         }
                         else if (implementationType is not null && serviceType is null)
                         {
-                            RegisterScope(implementationType);                         
+                            RegisterScope(implementationType);
                         }
                         break;
                     default:

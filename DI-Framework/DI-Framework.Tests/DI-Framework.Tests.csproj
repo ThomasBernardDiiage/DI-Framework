@@ -23,7 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DI-Framework.Tests.RegistrationAutherAssembly\DI-Framework.Tests.RegistrationAutherAssembly.csproj" />
     <ProjectReference Include="..\DI-Framework\DI-Framework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="registration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

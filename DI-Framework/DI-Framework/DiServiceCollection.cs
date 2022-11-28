@@ -1,4 +1,7 @@
 ﻿using DI_Framework;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Reflection;
 
 namespace DI_Framework
 {
@@ -32,11 +35,20 @@ namespace DI_Framework
             _serviceDescriptors.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), ServiceLifetime.Singleton));
         }
 
+        private void RegisterSingleton(Type service)
+        {
+            _serviceDescriptors.Add(new ServiceDescriptor(service, ServiceLifetime.Singleton));
+        }
+        private void RegisterSingleton(Type service, Type implementation)
+        {
+            _serviceDescriptors.Add(new ServiceDescriptor(service, implementation, ServiceLifetime.Singleton));
+        }
+
         /// <summary>
         ///  Adds a transient service of the type specified in <typeparamref name="TService"/>
         /// </summary>
         /// <typeparam name="TService"></typeparam>
-        public void RegisterTransient<TService>()
+        public void RegisterTransient<TService>() where TService : class
         {
             _serviceDescriptors.Add(new ServiceDescriptor(typeof(TService), ServiceLifetime.Transient));
         }
@@ -53,6 +65,16 @@ namespace DI_Framework
             where TImplementation : class, TService
         {
             _serviceDescriptors.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), ServiceLifetime.Transient));
+        }
+
+        //https://www.crispy-engineering.com/registering-all-types-as-generic-interfaces-in-assembly-in-dotnet-core/
+        private void RegisterTransient(Type service)
+        {
+            _serviceDescriptors.Add(new ServiceDescriptor(service, ServiceLifetime.Transient));
+        }
+        private void RegisterTransient(Type service, Type implementation)
+        {
+            _serviceDescriptors.Add(new ServiceDescriptor(service, implementation, ServiceLifetime.Transient));
         }
 
         /// <summary>
@@ -78,6 +100,15 @@ namespace DI_Framework
             _serviceDescriptors.Add(new ServiceDescriptor(typeof(TService), typeof(TImplementation), ServiceLifetime.Scope));
         }
 
+        private void RegisterScope(Type service)
+        {
+            _serviceDescriptors.Add(new ServiceDescriptor(service, ServiceLifetime.Scope));
+        }
+        private void RegisterScope(Type service, Type implementation)
+        {
+            _serviceDescriptors.Add(new ServiceDescriptor(service, implementation, ServiceLifetime.Scope));
+        }
+
         /// <summary>
         /// Build a container
         /// </summary>
@@ -85,6 +116,84 @@ namespace DI_Framework
         public DiContainer GenerateContainer()
         {
             return new DiContainer(_serviceDescriptors);
+        }
+        public void RegisterFromAssembly(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException(nameof(name));
+            }
+
+            var text = File.ReadAllText(name);
+
+            var registrations = JsonConvert.DeserializeObject<IEnumerable<Registration>>(text, new StringEnumConverter());
+
+            foreach (var registration in registrations)
+            {
+                Type? serviceType = null;
+                if (!string.IsNullOrEmpty(registration.AssemblyInterface))
+                {
+                    serviceType = Assembly.LoadFrom(registration.AssemblyInterface)
+                    .GetTypes().FirstOrDefault(e => e.Name == registration.InterfaceName);
+                }
+
+                if (!string.IsNullOrEmpty(registration.InterfaceName) && serviceType is null)
+                {
+                    throw new Exception("Couldn't reach the interface");
+                }
+
+                Type? implementationType = null;
+                if (!string.IsNullOrEmpty(registration.AssemblyClasse))
+                {
+                    implementationType = Assembly.LoadFrom(registration.AssemblyClasse)
+                    .GetTypes().FirstOrDefault(e => e.Name == registration.ClasseName);
+                }
+                if (!string.IsNullOrEmpty(registration.ClasseName) && implementationType is null)
+                {
+                    throw new Exception("Couldn't reach the class");
+                }
+
+                if (implementationType is null && serviceType is not null)
+                {
+                    throw new Exception("You can't register an interface without its implementation");
+                }
+
+                switch (registration.ServiceLifetime)
+                {
+                    case ServiceLifetime.Transient:
+                        if (serviceType is not null && implementationType is not null)
+                        {
+                            RegisterTransient(serviceType, implementationType);
+                        }
+                        else if (implementationType is not null && serviceType is null)
+                        {
+                            RegisterTransient(implementationType);
+                        }
+                        break;
+                    case ServiceLifetime.Singleton:
+                        if (serviceType is not null && implementationType is not null)
+                        {
+                            RegisterSingleton(serviceType, implementationType);
+                        }
+                        else if (implementationType is not null && serviceType is null)
+                        {
+                            RegisterSingleton(implementationType);
+                        }
+                        break;
+                    case ServiceLifetime.Scope:
+                        if (serviceType is not null && implementationType is not null)
+                        {
+                            RegisterScope(serviceType, implementationType);
+                        }
+                        else if (implementationType is not null && serviceType is null)
+                        {
+                            RegisterScope(implementationType);
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException("That service lifetime is not implemented");
+                }
+            }
         }
 
         /// <summary>

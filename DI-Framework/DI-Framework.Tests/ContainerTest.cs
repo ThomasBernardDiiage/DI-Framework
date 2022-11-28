@@ -1,4 +1,6 @@
 using DI_Framework.Exceptions;
+using DI_Framework.Tests.RegistrationAutherAssembly;
+using DI_Framework.Tests.Sut.Interfaces;
 using DI_Framework.Tests.Sut.Services;
 using Xunit;
 
@@ -6,6 +8,18 @@ namespace DI_Framework.Tests;
 
 public class ContainerTest
 {
+    [Fact]
+    public void TestRegisterFromAssembly()
+    {
+        var services = new DiServiceCollection();
+        services.RegisterFromAssembly("registration.json");
+        var container = services.GenerateContainer();
+        var service1 = container.GetService<IClassB>();
+        var service2 = container.GetService<ClassA>();
+        Assert.NotNull(service1);
+        Assert.NotNull(service2);
+    }
+
     [Fact] 
     public void TestResolveUnregisteredService()
     {

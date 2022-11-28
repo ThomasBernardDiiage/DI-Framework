@@ -1,0 +1,14 @@
+﻿[
+  {
+    "registrationType": "Transient",
+    "interfaceName": "IClassB",
+    "assemblyInterface": "DI-Framework.Tests.RegistrationAutherAssembly.dll",
+    "classeName": "ClassB",
+    "assemblyClasse": "DI-Framework.Tests.RegistrationAutherAssembly.dll"
+  },
+  {
+    "registrationType": "Transient",
+    "classeName": "ClassA",
+    "assemblyClasse": "DI-Framework.Tests.RegistrationAutherAssembly.dll"
+  }
+]
